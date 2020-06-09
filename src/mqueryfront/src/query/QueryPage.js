@@ -75,6 +75,10 @@ class QueryPage extends Component {
         this.submitJob("query", priority);
     }
 
+    handleQueryWithKeyboard() {
+        this.submitJob("query", "medium");
+    }
+
     handleParseQuery() {
         this.submitJob("parse", null);
     }
