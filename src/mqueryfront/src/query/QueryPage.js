@@ -17,6 +17,7 @@ const INITIAL_STATE = {
 };
 
 const PAGE_SIZE = 20;
+let keyMap = {};
 
 class QueryPage extends Component {
     constructor(props) {
@@ -29,6 +30,7 @@ class QueryPage extends Component {
         this.handleYaraUpdate = this.handleYaraUpdate.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handleSubmitQuery = this.handleSubmitQuery.bind(this);
+        this.handleQueryWithKeyboard = this.handleQueryWithKeyboard.bind(this);
         this.handleEditQuery = this.handleEditQuery.bind(this);
         this.handleParseQuery = this.handleParseQuery.bind(this);
         this.handleTaintsSelection = this.handleTaintsSelection.bind(this);
@@ -43,10 +45,12 @@ class QueryPage extends Component {
         const datasets = response.data.datasets;
 
         this.setState({ datasets: datasets });
+        document.addEventListener("keydown", this.handleQueryWithKeyboard);
     }
 
     componentWillUnmount() {
         this.cancelJobReload();
+        document.removeEventListener("keydown", this.handleQueryWithKeyboard);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -75,9 +79,14 @@ class QueryPage extends Component {
         this.submitJob("query", priority);
     }
 
-    handleQueryWithKeyboard() {
-        this.submitJob("query", "medium");
-    }
+    handleQueryWithKeyboard = (event) => {
+        keyMap[event.keyCode] = event.type == "keydown";
+        if (keyMap[17] && keyMap[13]) {
+            this.submitJob("query", "medium");
+            keyMap[17] = false;
+            keyMap[13] = false;
+        }
+    };
 
     handleParseQuery() {
         this.submitJob("parse", null);

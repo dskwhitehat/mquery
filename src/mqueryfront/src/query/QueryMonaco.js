@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import Editor, { monaco } from "@monaco-editor/react";
 import YARA from "./yara-lang";
+import QueryPage from "./QueryPage";
+
+let keyMap = {};
 
 class QueryMonaco extends Component {
     constructor(props) {
@@ -38,6 +41,10 @@ class QueryMonaco extends Component {
     }
 
     handleEditorDidMount(_, editor) {
+        document.addEventListener(
+            "keydown",
+            new QueryPage().handleQueryWithKeyboard
+        );
         this.editor = editor;
 
         monaco
@@ -68,6 +75,10 @@ class QueryMonaco extends Component {
 
     componentWillUnmount() {
         this.editor = null;
+        document.removeEventListener(
+            "keydown",
+            new QueryPage().handleQueryWithKeyboard
+        );
     }
 
     componentDidUpdate(prevProps) {
